@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { FoldersProvider } from "./_context/FoldersContext";
+import { LinksProvider } from "./_context/LinksContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -15,7 +16,9 @@ export default function RootLayout({
   return (
     <html lang="ko" className="h-full antialiased">
       <body className="min-h-full flex flex-col">
-        <FoldersProvider>{children}</FoldersProvider>
+        <FoldersProvider>
+          <LinksProvider>{children}</LinksProvider>
+        </FoldersProvider>
       </body>
     </html>
   );

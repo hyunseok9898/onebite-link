@@ -1,8 +1,6 @@
 import Header from "../../_components/Header"
 import Sidebar from "../../_components/Sidebar"
 import LinkGrid from "../../_components/LinkGrid"
-import { FOLDERS } from "../../_data/folders"
-import { LINKS } from "../../_data/links"
 
 export default async function FolderPage({
   params,
@@ -10,8 +8,6 @@ export default async function FolderPage({
   params: Promise<{ folderId: string }>
 }) {
   const { folderId } = await params
-  const folder = FOLDERS.find((f) => f.id === Number(folderId))
-  const folderLinks = LINKS.filter((link) => link.folder === folder?.name)
 
   return (
     <div className="min-h-screen bg-(--bg)">
@@ -19,7 +15,7 @@ export default async function FolderPage({
       <div className="flex pt-12">
         <Sidebar />
         <main className="ml-60 flex-1">
-          <LinkGrid links={folderLinks} title={folder?.name ?? "폴더"} />
+          <LinkGrid folderId={Number(folderId)} />
         </main>
       </div>
     </div>

@@ -4,6 +4,8 @@ export type LinkItem = {
   url: string
   folder: string
   badgeColor: string
+  description?: string
+  thumbnail?: string
 }
 
 export const LINKS: LinkItem[] = [

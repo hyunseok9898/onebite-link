@@ -5,6 +5,7 @@ import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { useFolders } from "../_context/FoldersContext"
 import DeleteFolderModal from "./DeleteFolderModal"
+import EditFolderModal from "./EditFolderModal"
 
 function GridIcon() {
   return (
@@ -29,6 +30,14 @@ function FolderIcon() {
   )
 }
 
+function PencilIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M9.917 1.75a1.237 1.237 0 0 1 1.75 1.75L4.083 11.083l-2.333.583.583-2.333L9.917 1.75Z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
+}
+
 function TrashIcon() {
   return (
     <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -44,6 +53,7 @@ export default function Sidebar() {
   const pathname = usePathname()
   const { folders, deleteFolder } = useFolders()
   const [pendingDelete, setPendingDelete] = useState<Folder | null>(null)
+  const [pendingEdit, setPendingEdit] = useState<Folder | null>(null)
 
   function handleConfirmDelete() {
     if (pendingDelete) {
@@ -78,7 +88,7 @@ export default function Sidebar() {
                   <li key={folder.id} className="group relative">
                     <Link
                       href={href}
-                      className={`flex items-center gap-2.5 px-3 py-2 pr-8 rounded-md text-sm transition-colors ${
+                      className={`flex items-center gap-2.5 px-3 py-2 pr-14 rounded-md text-sm transition-colors ${
                         isActive
                           ? "bg-(--hover-bg) text-(--text) font-semibold"
                           : "text-(--text-sub) hover:bg-(--hover-bg) hover:text-(--text)"
@@ -87,16 +97,28 @@ export default function Sidebar() {
                       <FolderIcon />
                       <span className="truncate">{folder.name}</span>
                     </Link>
-                    <button
-                      type="button"
-                      onClick={(e) => {
-                        e.preventDefault()
-                        setPendingDelete(folder)
-                      }}
-                      className="absolute right-2 top-1/2 -translate-y-1/2 p-1 rounded opacity-0 group-hover:opacity-100 text-(--text-sub) hover:text-(--error) hover:bg-(--hover-bg) transition-all"
-                    >
-                      <TrashIcon />
-                    </button>
+                    <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-0.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          setPendingEdit(folder)
+                        }}
+                        className="p-1 rounded text-(--text-sub) hover:text-(--accent) hover:bg-(--hover-bg) transition-colors"
+                      >
+                        <PencilIcon />
+                      </button>
+                      <button
+                        type="button"
+                        onClick={(e) => {
+                          e.preventDefault()
+                          setPendingDelete(folder)
+                        }}
+                        className="p-1 rounded text-(--text-sub) hover:text-(--error) hover:bg-(--hover-bg) transition-colors"
+                      >
+                        <TrashIcon />
+                      </button>
+                    </div>
                   </li>
                 )
               })}
@@ -105,6 +127,7 @@ export default function Sidebar() {
         </nav>
       </aside>
 
+      <EditFolderModal folder={pendingEdit} onClose={() => setPendingEdit(null)} />
       <DeleteFolderModal
         folderName={pendingDelete?.name ?? ""}
         isOpen={pendingDelete !== null}
