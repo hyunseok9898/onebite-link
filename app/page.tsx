@@ -4,9 +4,9 @@ import LinkGrid from "./_components/LinkGrid"
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-(--bg)">
       <Header />
-      <div className="flex pt-14">
+      <div className="flex pt-12">
         <Sidebar />
         <main className="ml-60 flex-1">
           <LinkGrid />

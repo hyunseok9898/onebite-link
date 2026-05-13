@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { FOLDERS } from "../_data/folders"
+import { useFolders } from "../_context/FoldersContext"
 
 function GridIcon() {
   return (
@@ -29,36 +29,37 @@ function FolderIcon() {
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const { folders } = useFolders()
 
   return (
-    <aside className="fixed top-14 left-0 w-60 h-[calc(100vh-3.5rem)] bg-white border-r border-gray-200 overflow-y-auto">
-      <nav className="p-3">
+    <aside className="fixed top-12 left-0 w-60 h-[calc(100vh-3rem)] bg-white border-r border-(--border) overflow-y-auto">
+      <nav className="p-2">
         <Link
           href="/"
-          className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg font-semibold text-sm transition-colors ${
+          className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${
             pathname === "/"
-              ? "bg-indigo-50 text-indigo-700"
-              : "text-gray-600 hover:bg-gray-100"
+              ? "bg-(--hover-bg) text-(--text) font-semibold"
+              : "text-(--text-sub) hover:bg-(--hover-bg) hover:text-(--text)"
           }`}
         >
           <GridIcon />
-          All
+          전체
         </Link>
 
         <div className="mt-5">
-          <p className="px-3 mb-2 text-xs font-semibold text-gray-400 uppercase tracking-wider">폴더</p>
+          <p className="px-3 mb-1.5 text-xs font-medium text-(--text-sub) uppercase tracking-wider">폴더</p>
           <ul className="space-y-0.5">
-            {FOLDERS.map((folder) => {
+            {folders.map((folder) => {
               const href = `/folder/${folder.id}`
               const isActive = pathname === href
               return (
                 <li key={folder.id}>
                   <Link
                     href={href}
-                    className={`flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm transition-colors ${
+                    className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${
                       isActive
-                        ? "bg-indigo-50 text-indigo-700 font-semibold"
-                        : "text-gray-600 hover:bg-gray-100"
+                        ? "bg-(--hover-bg) text-(--text) font-semibold"
+                        : "text-(--text-sub) hover:bg-(--hover-bg) hover:text-(--text)"
                     }`}
                   >
                     <FolderIcon />
