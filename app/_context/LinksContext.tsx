@@ -17,9 +17,16 @@ type NewLinkData = {
   thumbnail?: string
 }
 
+type UpdateLinkData = {
+  title: string
+  folder: string
+  description?: string
+}
+
 type LinksContextType = {
   links: LinkItem[]
   addLink: (data: NewLinkData) => void
+  updateLink: (id: number, data: UpdateLinkData) => void
   deleteLink: (id: number) => void
 }
 
@@ -34,12 +41,16 @@ export function LinksProvider({ children }: { children: ReactNode }) {
     setLinks((prev) => [...prev, { ...data, id, badgeColor }])
   }
 
+  function updateLink(id: number, data: UpdateLinkData) {
+    setLinks((prev) => prev.map((l) => (l.id === id ? { ...l, ...data } : l)))
+  }
+
   function deleteLink(id: number) {
     setLinks((prev) => prev.filter((l) => l.id !== id))
   }
 
   return (
-    <LinksContext.Provider value={{ links, addLink, deleteLink }}>
+    <LinksContext.Provider value={{ links, addLink, updateLink, deleteLink }}>
       {children}
     </LinksContext.Provider>
   )
