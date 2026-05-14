@@ -17,7 +17,7 @@ type LinksContextType = {
   isAdding: boolean
   addLink: (data: NewLinkData) => Promise<void>
   updateLink: (id: number, data: { title: string; folder_id: number | null; description: string | null }) => Promise<void>
-  deleteLink: (id: number) => void
+  deleteLink: (id: number) => Promise<void>
 }
 
 const LinksContext = createContext<LinksContextType | null>(null)
@@ -63,8 +63,12 @@ export function LinksProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function deleteLink(id: number) {
-    setLinks((prev) => prev.filter((l) => l.id !== id))
+  async function deleteLink(id: number) {
+    const client = createClient()
+    const { error } = await client.from("link").delete().eq("id", id)
+    if (!error) {
+      setLinks((prev) => prev.filter((l) => l.id !== id))
+    }
   }
 
   return (
