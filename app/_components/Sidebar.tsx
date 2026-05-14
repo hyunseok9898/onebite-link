@@ -55,9 +55,9 @@ export default function Sidebar() {
   const [pendingDelete, setPendingDelete] = useState<Folder | null>(null)
   const [pendingEdit, setPendingEdit] = useState<Folder | null>(null)
 
-  function handleConfirmDelete() {
+  async function handleConfirmDelete() {
     if (pendingDelete) {
-      deleteFolder(pendingDelete.id)
+      await deleteFolder(pendingDelete.id)
       setPendingDelete(null)
     }
   }
