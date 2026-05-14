@@ -1,13 +1,14 @@
 "use client"
 
-import { createContext, useContext, useState, type ReactNode } from "react"
-import { FOLDERS } from "../_data/folders"
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
+import { createClient } from "../../utils/supabase/client"
 
 type Folder = { id: number; name: string }
 
 type FoldersContextType = {
   folders: Folder[]
-  addFolder: (name: string) => void
+  isAdding: boolean
+  addFolder: (name: string) => Promise<void>
   deleteFolder: (id: number) => void
   renameFolder: (id: number, name: string) => void
 }
@@ -15,11 +16,36 @@ type FoldersContextType = {
 const FoldersContext = createContext<FoldersContextType | null>(null)
 
 export function FoldersProvider({ children }: { children: ReactNode }) {
-  const [folders, setFolders] = useState<Folder[]>(FOLDERS)
+  const [folders, setFolders] = useState<Folder[]>([])
+  const [isAdding, setIsAdding] = useState(false)
 
-  function addFolder(name: string) {
-    const nextId = Math.max(...folders.map((f) => f.id)) + 1
-    setFolders((prev) => [...prev, { id: nextId, name }])
+  useEffect(() => {
+    const client = createClient()
+    client
+      .from("folders")
+      .select("id, name")
+      .order("created_at")
+      .then(({ data }) => {
+        if (data) setFolders(data)
+      })
+  }, [])
+
+  async function addFolder(name: string) {
+    if (isAdding) return
+    setIsAdding(true)
+    try {
+      const client = createClient()
+      const { data, error } = await client
+        .from("folders")
+        .insert({ name })
+        .select("id, name")
+        .single()
+      if (!error && data) {
+        setFolders((prev) => [...prev, data])
+      }
+    } finally {
+      setIsAdding(false)
+    }
   }
 
   function deleteFolder(id: number) {
@@ -31,7 +57,7 @@ export function FoldersProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <FoldersContext.Provider value={{ folders, addFolder, deleteFolder, renameFolder }}>
+    <FoldersContext.Provider value={{ folders, isAdding, addFolder, deleteFolder, renameFolder }}>
       {children}
     </FoldersContext.Provider>
   )

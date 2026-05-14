@@ -9,14 +9,14 @@ interface Props {
 }
 
 export default function NewFolderModal({ isOpen, onClose }: Props) {
-  const { addFolder } = useFolders()
+  const { addFolder, isAdding } = useFolders()
   const [name, setName] = useState("")
 
   if (!isOpen) return null
 
-  function handleSave() {
-    if (!name.trim()) return
-    addFolder(name.trim())
+  async function handleSave() {
+    if (!name.trim() || isAdding) return
+    await addFolder(name.trim())
     setName("")
     onClose()
   }
@@ -56,9 +56,10 @@ export default function NewFolderModal({ isOpen, onClose }: Props) {
           <button
             type="button"
             onClick={handleSave}
-            className="px-4 py-2 rounded-md bg-(--accent) text-white text-sm font-medium hover:bg-(--accent-hover) transition-colors"
+            disabled={isAdding}
+            className="px-4 py-2 rounded-md bg-(--accent) text-white text-sm font-medium hover:bg-(--accent-hover) transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            저장
+            {isAdding ? "저장 중..." : "저장"}
           </button>
         </div>
       </div>
