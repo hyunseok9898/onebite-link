@@ -18,9 +18,9 @@ export default function EditFolderModal({ folder, onClose }: Props) {
 
   if (!folder) return null
 
-  function handleSave() {
+  async function handleSave() {
     if (!name.trim() || !folder) return
-    renameFolder(folder.id, name.trim())
+    await renameFolder(folder.id, name.trim())
     onClose()
   }
 
