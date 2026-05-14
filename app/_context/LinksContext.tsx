@@ -1,47 +1,61 @@
 "use client"
 
-import { createContext, useContext, useState, type ReactNode } from "react"
-import { LINKS, type LinkItem } from "../_data/links"
-
-const BADGE_COLORS = [
-  "bg-blue-500", "bg-purple-500", "bg-green-500", "bg-orange-500",
-  "bg-red-500", "bg-pink-500", "bg-cyan-500", "bg-indigo-500",
-  "bg-teal-500", "bg-yellow-500",
-]
+import { createContext, useContext, useEffect, useState, type ReactNode } from "react"
+import { createClient } from "../../utils/supabase/client"
+import { type LinkItem } from "../_data/links"
 
 type NewLinkData = {
   title: string
   url: string
-  folder: string
-  description?: string
-  thumbnail?: string
-}
-
-type UpdateLinkData = {
-  title: string
-  folder: string
-  description?: string
+  folder_id: number | null
+  description: string | null
+  thumbnail_url: string | null
 }
 
 type LinksContextType = {
   links: LinkItem[]
-  addLink: (data: NewLinkData) => void
-  updateLink: (id: number, data: UpdateLinkData) => void
+  isAdding: boolean
+  addLink: (data: NewLinkData) => Promise<void>
+  updateLink: (id: number, data: { title: string; folder_id: number | null; description: string | null }) => void
   deleteLink: (id: number) => void
 }
 
 const LinksContext = createContext<LinksContextType | null>(null)
 
 export function LinksProvider({ children }: { children: ReactNode }) {
-  const [links, setLinks] = useState<LinkItem[]>(LINKS)
+  const [links, setLinks] = useState<LinkItem[]>([])
+  const [isAdding, setIsAdding] = useState(false)
 
-  function addLink(data: NewLinkData) {
-    const id = links.length > 0 ? Math.max(...links.map((l) => l.id)) + 1 : 1
-    const badgeColor = BADGE_COLORS[links.length % BADGE_COLORS.length]
-    setLinks((prev) => [...prev, { ...data, id, badgeColor }])
+  useEffect(() => {
+    const client = createClient()
+    client
+      .from("link")
+      .select("id, title, url, description, thumbnail_url, folder_id, created_at")
+      .order("created_at", { ascending: false })
+      .then(({ data }) => {
+        if (data) setLinks(data)
+      })
+  }, [])
+
+  async function addLink(data: NewLinkData) {
+    if (isAdding) return
+    setIsAdding(true)
+    try {
+      const client = createClient()
+      const { data: inserted, error } = await client
+        .from("link")
+        .insert(data)
+        .select("id, title, url, description, thumbnail_url, folder_id, created_at")
+        .single()
+      if (!error && inserted) {
+        setLinks((prev) => [inserted, ...prev])
+      }
+    } finally {
+      setIsAdding(false)
+    }
   }
 
-  function updateLink(id: number, data: UpdateLinkData) {
+  function updateLink(id: number, data: { title: string; folder_id: number | null; description: string | null }) {
     setLinks((prev) => prev.map((l) => (l.id === id ? { ...l, ...data } : l)))
   }
 
@@ -50,7 +64,7 @@ export function LinksProvider({ children }: { children: ReactNode }) {
   }
 
   return (
-    <LinksContext.Provider value={{ links, addLink, updateLink, deleteLink }}>
+    <LinksContext.Provider value={{ links, isAdding, addLink, updateLink, deleteLink }}>
       {children}
     </LinksContext.Provider>
   )

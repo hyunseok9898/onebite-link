@@ -13,7 +13,7 @@ export default function LinkGrid({ folderId }: Props) {
   const { folders } = useFolders()
 
   const folder = folderId !== undefined ? folders.find((f) => f.id === folderId) : undefined
-  const filtered = folder ? links.filter((l) => l.folder === folder.name) : links
+  const filtered = folderId !== undefined ? links.filter((l) => l.folder_id === folderId) : links
   const title = folder?.name ?? "전체"
 
   return (

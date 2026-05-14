@@ -2,9 +2,16 @@
 
 import { useState } from "react"
 import { useLinks } from "../_context/LinksContext"
+import { useFolders } from "../_context/FoldersContext"
 import DeleteLinkModal from "./DeleteLinkModal"
 import EditLinkModal from "./EditLinkModal"
 import { type LinkItem } from "../_data/links"
+
+const BADGE_COLORS = [
+  "bg-blue-500", "bg-purple-500", "bg-green-500", "bg-orange-500",
+  "bg-red-500", "bg-pink-500", "bg-cyan-500", "bg-indigo-500",
+  "bg-teal-500", "bg-yellow-500",
+]
 
 function TrashIcon() {
   return (
@@ -28,9 +35,13 @@ function PencilIcon() {
 
 export default function LinkCard({ link }: { link: LinkItem }) {
   const { deleteLink } = useLinks()
+  const { folders } = useFolders()
   const [isEditModalOpen, setIsEditModalOpen] = useState(false)
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false)
+
   const domain = new URL(link.url).hostname.replace("www.", "")
+  const folderName = folders.find((f) => f.id === link.folder_id)?.name ?? ""
+  const badgeColor = BADGE_COLORS[link.id % BADGE_COLORS.length]
 
   return (
     <>
@@ -53,30 +64,30 @@ export default function LinkCard({ link }: { link: LinkItem }) {
             <TrashIcon />
           </button>
         </div>
-        {link.thumbnail ? (
+        {link.thumbnail_url ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
-            src={link.thumbnail}
+            src={link.thumbnail_url}
             alt={link.title}
             className="w-full h-28 object-cover"
           />
         ) : null}
         <div className="p-4">
-          {!link.thumbnail && (
+          {!link.thumbnail_url && (
             <div className="flex items-start justify-between mb-3">
               <div
-                className={`w-8 h-8 rounded-md flex items-center justify-center text-sm font-bold text-white shrink-0 ${link.badgeColor}`}
+                className={`w-8 h-8 rounded-md flex items-center justify-center text-sm font-bold text-white shrink-0 ${badgeColor}`}
               >
                 {link.title.charAt(0)}
               </div>
               <span className="text-xs bg-(--hover-bg) text-(--text-sub) px-2 py-0.5 rounded ml-2 shrink-0">
-                {link.folder}
+                {folderName}
               </span>
             </div>
           )}
-          {link.thumbnail && (
+          {link.thumbnail_url && (
             <span className="inline-block text-xs bg-(--hover-bg) text-(--text-sub) px-2 py-0.5 rounded mb-2">
-              {link.folder}
+              {folderName}
             </span>
           )}
           <h3 className="font-medium text-(--text) text-sm mb-1 line-clamp-2">{link.title}</h3>

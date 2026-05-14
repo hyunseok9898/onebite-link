@@ -14,13 +14,13 @@ export default function EditLinkModal({ link, onClose }: Props) {
   const { updateLink } = useLinks()
   const { folders } = useFolders()
   const [title, setTitle] = useState("")
-  const [folder, setFolder] = useState("")
+  const [folderId, setFolderId] = useState<string>("")
   const [description, setDescription] = useState("")
 
   useEffect(() => {
     if (link) {
       setTitle(link.title)
-      setFolder(link.folder)
+      setFolderId(link.folder_id !== null ? String(link.folder_id) : "")
       setDescription(link.description ?? "")
     }
   }, [link])
@@ -31,8 +31,8 @@ export default function EditLinkModal({ link, onClose }: Props) {
     if (!title.trim() || !link) return
     updateLink(link.id, {
       title: title.trim(),
-      folder,
-      description: description.trim() || undefined,
+      folder_id: folderId ? Number(folderId) : null,
+      description: description.trim() || null,
     })
     onClose()
   }
@@ -56,12 +56,13 @@ export default function EditLinkModal({ link, onClose }: Props) {
           <div>
             <label className="block text-xs text-(--text-sub) mb-1">폴더</label>
             <select
-              value={folder}
-              onChange={(e) => setFolder(e.target.value)}
+              value={folderId}
+              onChange={(e) => setFolderId(e.target.value)}
               className="w-full px-3 py-2 rounded-md border border-(--border) text-sm text-(--text) bg-white focus:outline-none focus:border-(--accent) transition-colors"
             >
+              <option value="">폴더 없음</option>
               {folders.map((f) => (
-                <option key={f.id} value={f.name}>{f.name}</option>
+                <option key={f.id} value={f.id}>{f.name}</option>
               ))}
             </select>
           </div>

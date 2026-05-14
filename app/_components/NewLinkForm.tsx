@@ -28,23 +28,17 @@ export default function NewLinkForm() {
       return
     }
 
-    const folder = folders.find((f) => f.id === Number(folderId))
-    if (!folder) {
-      setError("유효하지 않은 폴더입니다.")
-      return
-    }
-
     setIsLoading(true)
     try {
       const res = await fetch(`/api/og?url=${encodeURIComponent(url.trim())}`)
       const data = await res.json()
 
-      addLink({
+      await addLink({
         title: data.title || new URL(url.trim()).hostname,
         url: url.trim(),
-        folder: folder.name,
-        description: data.description || undefined,
-        thumbnail: data.thumbnail || undefined,
+        folder_id: Number(folderId),
+        description: data.description || null,
+        thumbnail_url: data.thumbnail || null,
       })
 
       router.push("/")
