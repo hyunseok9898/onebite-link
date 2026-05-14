@@ -16,7 +16,7 @@ type LinksContextType = {
   links: LinkItem[]
   isAdding: boolean
   addLink: (data: NewLinkData) => Promise<void>
-  updateLink: (id: number, data: { title: string; folder_id: number | null; description: string | null }) => void
+  updateLink: (id: number, data: { title: string; folder_id: number | null; description: string | null }) => Promise<void>
   deleteLink: (id: number) => void
 }
 
@@ -55,8 +55,12 @@ export function LinksProvider({ children }: { children: ReactNode }) {
     }
   }
 
-  function updateLink(id: number, data: { title: string; folder_id: number | null; description: string | null }) {
-    setLinks((prev) => prev.map((l) => (l.id === id ? { ...l, ...data } : l)))
+  async function updateLink(id: number, data: { title: string; folder_id: number | null; description: string | null }) {
+    const client = createClient()
+    const { error } = await client.from("link").update(data).eq("id", id)
+    if (!error) {
+      setLinks((prev) => prev.map((l) => (l.id === id ? { ...l, ...data } : l)))
+    }
   }
 
   function deleteLink(id: number) {

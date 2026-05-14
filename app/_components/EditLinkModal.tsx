@@ -27,9 +27,9 @@ export default function EditLinkModal({ link, onClose }: Props) {
 
   if (!link) return null
 
-  function handleSave() {
+  async function handleSave() {
     if (!title.trim() || !link) return
-    updateLink(link.id, {
+    await updateLink(link.id, {
       title: title.trim(),
       folder_id: folderId ? Number(folderId) : null,
       description: description.trim() || null,
