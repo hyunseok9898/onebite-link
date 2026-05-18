@@ -45,7 +45,10 @@ export default function LinkCard({ link }: { link: LinkItem }) {
 
   return (
     <>
-      <div className="group relative bg-white rounded-lg border border-(--border) overflow-hidden hover:bg-(--hover-bg) transition-colors cursor-pointer">
+      <div
+        className="group relative bg-white rounded-lg border border-(--border) overflow-hidden hover:bg-(--hover-bg) transition-colors cursor-pointer"
+        onClick={() => window.open(link.url, "_blank", "noopener,noreferrer")}
+      >
         <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
           <button
             type="button"

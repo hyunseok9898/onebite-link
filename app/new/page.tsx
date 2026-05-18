@@ -1,4 +1,9 @@
+import type { Metadata } from "next"
 import Header from "../_components/Header"
+
+export const metadata: Metadata = {
+  title: "새 링크 추가 | 현석링크",
+}
 import Sidebar from "../_components/Sidebar"
 import NewLinkForm from "../_components/NewLinkForm"
 

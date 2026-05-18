@@ -51,7 +51,7 @@ export default function ResetPasswordPage() {
       )}
 
       <div className="w-full max-w-sm">
-        <h1 className="text-2xl font-bold text-(--text) text-center mb-8">한입링크</h1>
+        <h1 className="text-2xl font-bold text-(--text) text-center mb-8">현석링크</h1>
         <div className="bg-white rounded-lg border border-(--border) p-8 space-y-4">
           {sent ? (
             <>

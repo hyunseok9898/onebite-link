@@ -4,8 +4,17 @@ import { LinksProvider } from "./_context/LinksContext";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "한입링크",
-  description: "링크 관리 앱",
+  title: "현석링크",
+  description: "나만의 링크 저장소",
+  icons: {
+    icon: "/favicon.ico",
+  },
+  openGraph: {
+    title: "현석링크",
+    description: "나만의 링크 저장소",
+    images: [{ url: "/thumbnail.png" }],
+    type: "website",
+  },
 };
 
 export default function RootLayout({

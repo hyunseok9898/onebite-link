@@ -18,7 +18,7 @@ export default function Header() {
   return (
     <>
       <header className="fixed top-0 left-0 right-0 h-12 bg-white/90 backdrop-blur-sm border-b border-(--border) flex items-center justify-between px-4 z-50">
-        <span className="text-base font-semibold text-(--text)">한입링크</span>
+        <span className="text-base font-semibold text-(--text)">현석링크</span>
         <div className="flex items-center gap-2">
           <button
             type="button"

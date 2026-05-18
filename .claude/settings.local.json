@@ -6,7 +6,8 @@
       "Bash(claude mcp *)",
       "mcp__supabase__list_tables",
       "mcp__supabase__apply_migration",
-      "Bash(node -e \"const p = require\\('c:/webdev/onebite-link/node_modules/next/package.json'\\); console.log\\(p.version\\)\")"
+      "Bash(node -e \"const p = require\\('c:/webdev/onebite-link/node_modules/next/package.json'\\); console.log\\(p.version\\)\")",
+      "Bash(xargs sed -i 's/한입링크/현석링크/g')"
     ]
   }
 }

@@ -1,4 +1,9 @@
+import type { Metadata } from "next"
 import Header from "../../_components/Header"
+
+export const metadata: Metadata = {
+  title: "폴더 | 현석링크",
+}
 import Sidebar from "../../_components/Sidebar"
 import LinkGrid from "../../_components/LinkGrid"
 

@@ -1,6 +1,11 @@
+import type { Metadata } from "next"
 import Header from "./_components/Header"
 import Sidebar from "./_components/Sidebar"
 import LinkGrid from "./_components/LinkGrid"
+
+export const metadata: Metadata = {
+  title: "전체 링크 | 현석링크",
+}
 
 export default function Home() {
   return (
