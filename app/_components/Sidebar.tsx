@@ -2,10 +2,11 @@
 
 import { useState } from "react"
 import Link from "next/link"
-import { usePathname } from "next/navigation"
+import { usePathname, useRouter } from "next/navigation"
 import { useFolders } from "../_context/FoldersContext"
 import DeleteFolderModal from "./DeleteFolderModal"
 import EditFolderModal from "./EditFolderModal"
+import { createClient } from "../../utils/supabase/client"
 
 function GridIcon() {
   return (
@@ -51,9 +52,16 @@ type Folder = { id: number; name: string }
 
 export default function Sidebar() {
   const pathname = usePathname()
+  const router = useRouter()
   const { folders, deleteFolder } = useFolders()
   const [pendingDelete, setPendingDelete] = useState<Folder | null>(null)
   const [pendingEdit, setPendingEdit] = useState<Folder | null>(null)
+
+  async function handleLogout() {
+    const client = createClient()
+    await client.auth.signOut()
+    router.push("/login")
+  }
 
   async function handleConfirmDelete() {
     if (pendingDelete) {
@@ -64,8 +72,8 @@ export default function Sidebar() {
 
   return (
     <>
-      <aside className="fixed top-12 left-0 w-60 h-[calc(100vh-3rem)] bg-white border-r border-(--border) overflow-y-auto">
-        <nav className="p-2">
+      <aside className="fixed top-12 left-0 w-60 h-[calc(100vh-3rem)] bg-white border-r border-(--border) flex flex-col">
+        <nav className="p-2 flex-1 overflow-y-auto">
           <Link
             href="/"
             className={`flex items-center gap-2.5 px-3 py-2 rounded-md text-sm transition-colors ${
@@ -125,6 +133,18 @@ export default function Sidebar() {
             </ul>
           </div>
         </nav>
+        <div className="p-2 border-t border-(--border)">
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="w-full flex items-center gap-2.5 px-3 py-2 rounded-md text-sm text-(--text-sub) hover:bg-(--hover-bg) hover:text-(--error) transition-colors"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M6 14H3a1 1 0 0 1-1-1V3a1 1 0 0 1 1-1h3M10.667 11.333 14 8l-3.333-3.333M14 8H6" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+            로그아웃
+          </button>
+        </div>
       </aside>
 
       <EditFolderModal folder={pendingEdit} onClose={() => setPendingEdit(null)} />
