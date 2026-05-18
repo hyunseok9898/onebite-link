@@ -21,13 +21,21 @@ export function FoldersProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const client = createClient()
-    client
-      .from("folders")
-      .select("id, name")
-      .order("created_at")
-      .then(({ data }) => {
-        if (data) setFolders(data)
-      })
+
+    const { data: { subscription } } = client.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        client
+          .from("folders")
+          .select("id, name")
+          .eq("user_id", session.user.id)
+          .order("created_at")
+          .then(({ data }) => setFolders(data ?? []))
+      } else {
+        setFolders([])
+      }
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   async function addFolder(name: string) {

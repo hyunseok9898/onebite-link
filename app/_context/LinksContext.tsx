@@ -28,13 +28,21 @@ export function LinksProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     const client = createClient()
-    client
-      .from("link")
-      .select("id, title, url, description, thumbnail_url, folder_id, created_at")
-      .order("created_at", { ascending: false })
-      .then(({ data }) => {
-        if (data) setLinks(data)
-      })
+
+    const { data: { subscription } } = client.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        client
+          .from("link")
+          .select("id, title, url, description, thumbnail_url, folder_id, created_at")
+          .eq("user_id", session.user.id)
+          .order("created_at", { ascending: false })
+          .then(({ data }) => setLinks(data ?? []))
+      } else {
+        setLinks([])
+      }
+    })
+
+    return () => subscription.unsubscribe()
   }, [])
 
   async function addLink(data: NewLinkData) {
