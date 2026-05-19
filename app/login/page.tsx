@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import Image from "next/image"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { createClient } from "../../utils/supabase/client"
@@ -104,13 +103,12 @@ export default function LoginPage() {
           >
             {isLoading ? "처리 중..." : "로그인"}
           </button>
-          <button type="button" onClick={handleKakaoLogin} className="w-full">
-            <Image
+          <button type="button" onClick={handleKakaoLogin} className="w-full rounded-md overflow-hidden">
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="/kakao_login_large_wide.png"
               alt="카카오 로그인"
-              width={600}
-              height={90}
-              className="w-full h-auto rounded-md"
+              className="w-full h-auto block"
             />
           </button>
           <p className="text-center text-sm text-(--text-sub)">
